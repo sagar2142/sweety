@@ -1,0 +1,23 @@
+name: sweety
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: sweety-db
+    environment:
+      POSTGRES_USER: sweety
+      POSTGRES_PASSWORD: sweety
+      POSTGRES_DB: sweety
+    ports:
+      - "${DB_PORT:-5434}:5432"
+    volumes:
+      - sweety-db-data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sweety -d sweety"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  sweety-db-data:
